@@ -12,10 +12,10 @@ class User {
   String? token;
   User({this.name, this.username, this.password, this.token});
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
+  factory User.fromJson(Map<String, dynamic> json, String usern, String passw) => User(
         name: json['name'],
-        username: json['username'],
-        password: json['password'],
+        username: usern,
+        password: passw,
         token: json['token'],
       );
 }
