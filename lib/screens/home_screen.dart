@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mydrink_app/models/user_model.dart';
 import 'package:mydrink_app/providers/user_provider.dart';
+import 'package:mydrink_app/screens/add_client.dart';
+import 'package:mydrink_app/screens/detail_client.dart';
 import 'package:mydrink_app/services/clientes_service.dart';
 import 'package:provider/provider.dart';
 
@@ -21,12 +23,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    user = Provider.of<UserProvider>(context, listen: false);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    user = Provider.of<UserProvider>(context);
     getClientes();
   }
 
@@ -37,11 +39,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    double width = size.width;
-    double height = size.height;
+    //Size size = MediaQuery.of(context).size;
+    //double width = size.width;
+    //double height = size.height;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
         child: Column(
@@ -51,8 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Icon(Icons.person, size: 42),
-                const SizedBox(width: 10),
+                const Icon(Icons.person, size: 38),
                 Text('Hola ${widget.usuario.username}!',
                     style: const TextStyle(fontSize: 24)),
                 IconButton(
@@ -60,11 +62,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       user.logOut();
                       setState(() {});
                     },
-                    icon: Icon(Icons.exit_to_app))
+                    icon: const Icon(Icons.exit_to_app))
               ],
             ),
             const SizedBox(height: 30),
-            Text('Lista de usuarios:',
+            const Text('Lista de usuarios:',
                 style: TextStyle(fontWeight: FontWeight.bold)),
             Expanded(
               child: ListView.builder(
@@ -72,14 +74,45 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: listaClientes.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text(listaClientes[index].nombre ?? ''),
+                    title: Text(
+                        '${listaClientes[index].idCliente} ${listaClientes[index].nombre ?? ''}'),
                     subtitle: Text(listaClientes[index].correo ?? ''),
+                    leading: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black),
+                            borderRadius: BorderRadius.circular(30),
+                            color: Colors.white),
+                        padding: const EdgeInsets.all(10),
+                        child: const Icon(
+                          Icons.person,
+                          color: Colors.black,
+                          size: 30,
+                        )),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailClientScreen(
+                              cliente: listaClientes[index],
+                            ),
+                          ));
+                    },
                   );
                 },
               ),
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AddClientScreen(),
+              ));
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }

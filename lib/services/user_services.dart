@@ -23,11 +23,10 @@ class UserServices {
         await UserProvider().login(user);
         return user;
       } else {
-        print(response.reasonPhrase);
         return null;
       }
     } catch (e) {
-      print('Error $e');
+      //print('Error $e');
       return null;
     }
   }

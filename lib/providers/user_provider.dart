@@ -20,6 +20,8 @@ class UserProvider extends ChangeNotifier {
   User? getUser() {
     if (userBox.values.isNotEmpty) {
       return userBox.values.first;
+    }else{
+      return null;
     }
   }
 

@@ -74,13 +74,17 @@ class _LoginScreenState extends State<LoginScreen> {
         .login(username: emailController.text, password: passController.text);
     if (user is User && user.token != null) {
       successTrigger?.fire();
+      if(context.mounted){
+
       Navigator.push(
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
             builder: (context) => HomeScreen(
               usuario: user,
             ),
           ));
+      }
     } else {
       failTrigger?.fire();
     }

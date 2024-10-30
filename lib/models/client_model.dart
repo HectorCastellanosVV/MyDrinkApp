@@ -11,8 +11,8 @@ class Client {
       this.telefono,
       this.comentarios});
 
-  factory Client.fromJson(Map<String, String> json) => Client(
-        idCliente: int.tryParse(json['ClienteID'] as String),
+  factory Client.fromJson(Map<String, dynamic> json) => Client(
+        idCliente: json['ClienteID'] as int,
         nombre: json['Nombre'],
         correo: json['Correo'],
         telefono: json['Telefono'],
