@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mydrink_app/config/environments.dart';
 import 'package:mydrink_app/models/client_model.dart';
 import 'package:mydrink_app/providers/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +15,7 @@ class ClientesService {
       String token = user.getUser()!.token!;
       var headers = {'Authorization': 'Bearer $token'};
       var response = await http.get(
-          Uri.parse('http://192.168.1.162:3000/api/clientes'),
+          Uri.parse('${Environments.direccionServer}/api/clientes'),
           headers: (headers));
 
       if (response.statusCode == 200) {
@@ -26,8 +27,7 @@ class ClientesService {
             listaC.add(item);
           }
         }
-      } else {
-      }
+      } else {}
       return listaC;
     } catch (e) {
       return [];
@@ -40,19 +40,19 @@ class ClientesService {
       String token = userProvider.getUser()!.token!;
 
       var headers = {
-        'Origin': 'http://192.168.1.161',
+        'Origin': Environments.direccionUser,
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token'
       };
-      var response =
-          await http.post(Uri.parse('http://192.168.1.162:3000/api/clientes'),
-              body: json.encode({
-                "Nombre": cliente.nombre,
-                "Correo": cliente.correo,
-                "Telefono": cliente.telefono,
-                "Comentarios": cliente.comentarios
-              }),
-              headers: headers);
+      var response = await http.post(
+          Uri.parse('${Environments.direccionServer}/api/clientes'),
+          body: json.encode({
+            "Nombre": cliente.nombre,
+            "Correo": cliente.correo,
+            "Telefono": cliente.telefono,
+            "Comentarios": cliente.comentarios
+          }),
+          headers: headers);
 
       if (response.statusCode == 200) {
         // ignore: use_build_context_synchronously
@@ -76,16 +76,15 @@ class ClientesService {
       BuildContext context, Client cliente, UserProvider userProvider) async {
     try {
       String token = userProvider.getUser()!.token!;
-      
 
       var headers = {
-        'Origin': 'http://192.168.1.161',
+        'Origin': Environments.direccionUser,
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token'
       };
       var response = await http.put(
           Uri.parse(
-              'http://192.168.1.162:3000/api/clientes/${cliente.idCliente}'),
+              '${Environments.direccionServer}/api/clientes/${cliente.idCliente}'),
           body: json.encode({
             "Nombre": cliente.nombre,
             "Correo": cliente.correo,
@@ -117,12 +116,12 @@ class ClientesService {
     try {
       String token = user.getUser()!.token!;
       var headers = {
-        'Origin': 'http://192.168.1.161',
+        'Origin': Environments.direccionUser,
         'Authorization': 'Bearer $token'
       };
 
       var response = await http.delete(
-          Uri.parse('http://192.168.1.162:3000/api/clientes/$idCliente'),
+          Uri.parse('${Environments.direccionServer}/api/clientes/$idCliente'),
           headers: headers);
       if (response.statusCode == 200 || response.statusCode == 204) {
         // ignore: use_build_context_synchronously
