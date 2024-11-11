@@ -74,16 +74,15 @@ class _LoginScreenState extends State<LoginScreen> {
         .login(username: emailController.text, password: passController.text);
     if (user is User && user.token != null) {
       successTrigger?.fire();
-      if(context.mounted){
-
-      Navigator.push(
-          // ignore: use_build_context_synchronously
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomeScreen(
-              usuario: user,
-            ),
-          ));
+      if (context.mounted) {
+        Navigator.push(
+            // ignore: use_build_context_synchronously
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomeScreen(
+                usuario: user,
+              ),
+            ));
       }
     } else {
       failTrigger?.fire();
@@ -98,94 +97,89 @@ class _LoginScreenState extends State<LoginScreen> {
     double height = size.height;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
-        width: width,
-        height: height,
-        color: Colors.white70,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              //artboard
-              if (artboard != null)
-                SizedBox(
-                  width: width,
-                  height: height * 0.3,
-                  child: Rive(artboard: artboard!),
-                ),
-              const SizedBox(
-                height: 120,
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            //artboard
+            if (artboard != null)
+              SizedBox(
+                width: width,
+                height: height * 0.3,
+                child: Rive(artboard: artboard!),
               ),
-              Container(
-                width: 400,
-                height: 100,
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: TextFormField(
-                  onTap: lookAround,
-                  onChanged: (value) => moveEyes(value),
-                  controller: emailController,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                  ),
-                  decoration: const InputDecoration(
-                    labelText: "Ingresa tu username",
-                    hintText: 'Username',
-                    labelStyle: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 24,
-                    ),
+            const SizedBox(
+              height: 120,
+            ),
+            Container(
+              width: 400,
+              height: 100,
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: TextFormField(
+                onTap: lookAround,
+                onChanged: (value) => moveEyes(value),
+                controller: emailController,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                ),
+                decoration: const InputDecoration(
+                  labelText: "Ingresa tu username",
+                  hintText: 'Username',
+                  labelStyle: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 24,
                   ),
                 ),
               ),
-              Container(
-                width: 400,
-                height: 100,
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: TextFormField(
-                  onTap: handsUpOnEyes,
-                  controller: passController,
-                  obscureText: isHandsUp?.value ?? false,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                  ),
-                  decoration: InputDecoration(
-                    labelText: "Ingresa tu password",
-                    hintText: 'Password',
-                    suffixIcon: isHandsUp?.value ?? false
-                        ? const Icon(Icons.no_encryption_gmailerrorred)
-                        : const Icon(Icons.remove_red_eye),
-                    labelStyle: const TextStyle(
-                      color: Colors.blue,
-                      fontSize: 24,
-                    ),
+            ),
+            Container(
+              width: 400,
+              height: 100,
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: TextFormField(
+                onTap: handsUpOnEyes,
+                controller: passController,
+                obscureText: isHandsUp?.value ?? false,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                ),
+                decoration: InputDecoration(
+                  labelText: "Ingresa tu password",
+                  hintText: 'Password',
+                  suffixIcon: isHandsUp?.value ?? false
+                      ? const Icon(Icons.no_encryption_gmailerrorred)
+                      : const Icon(Icons.remove_red_eye),
+                  labelStyle: const TextStyle(
+                    color: Colors.blue,
+                    fontSize: 24,
                   ),
                 ),
               ),
-        
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                height: 50,
-                width: 250,
-                decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 252, 145, 246),
-                    borderRadius: BorderRadius.circular(20)),
-                child: MaterialButton(
-                  onPressed: () => {
-                    loginClick(),
-                  },
-                  child: const Text(
-                    'Login',
-                    style: TextStyle(color: Colors.white, fontSize: 25),
-                  ),
+            ),
+
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              height: 50,
+              width: 250,
+              decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 252, 145, 246),
+                  borderRadius: BorderRadius.circular(20)),
+              child: MaterialButton(
+                onPressed: () => {
+                  loginClick(),
+                },
+                child: const Text(
+                  'Login',
+                  style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
