@@ -4,6 +4,7 @@ import 'package:mydrink_app/providers/user_provider.dart';
 import 'package:mydrink_app/screens/add_client.dart';
 import 'package:mydrink_app/screens/detail_client.dart';
 import 'package:mydrink_app/services/clientes_service.dart';
+import 'package:mydrink_app/screens/add_category.dart';
 import 'package:provider/provider.dart';
 
 import '../models/client_model.dart';
@@ -62,7 +63,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       user.logOut();
                       setState(() {});
                     },
-                    icon: const Icon(Icons.exit_to_app))
+                    icon: const Icon(Icons.exit_to_app)),
+                IconButton(
+                  onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AddCategoryScreen(), // Redirige a la nueva pantalla
+                          ),
+                      );
+                }, icon: const Icon(Icons.category),)    
               ],
             ),
             const SizedBox(height: 30),

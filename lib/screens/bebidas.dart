@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 class BebidasScreen extends StatefulWidget{
   const BebidasScreen({super.key});
 
@@ -23,4 +23,4 @@ class BebidasScreen extends StatefulWidget{
       )
     )
   }
-}
+}*/

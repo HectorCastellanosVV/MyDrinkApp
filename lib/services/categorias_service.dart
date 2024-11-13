@@ -4,14 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mydrink_app/config/environments.dart';
 import 'package:mydrink_app/models/categoria_model.dart';
+import 'package:mydrink_app/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class CategoryService {
   Future<List<Category>> getListCategories(BuildContext context) async {
     try {
-      List<Category> listaC = [];
+      List<Category> listaCat = [];
+      var user = Provider.of<UserProvider>(context);
+      String token = user.getUser()!.token!;
+      var headers = {'Authorization': 'Bearer $token'};
       var response = await http.get(
           Uri.parse('${Environments.direccionServer}/api/categorias'),
-          headers: {'Content-Type': 'application/json'});
+          //headers: {'Content-Type': 'application/json'});
+            headers: (headers));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -19,17 +25,17 @@ class CategoryService {
         if (datos is List) {
           for (Map<String, dynamic> element in datos) {
             var item = Category.fromJson(element);
-            listaC.add(item);
+            listaCat.add(item);
           }
         }
       }
-      return listaC;
+      return listaCat;
     } catch (e) {
       return [];
     }
   }
 
-  Future<void> addCategory(BuildContext context, Category category) async {
+  Future<void> addCategory(BuildContext context, Category category, UserProvider userProvider) async {
     try {
       var response = await http.post(
           Uri.parse('${Environments.direccionServer}/api/categorias'),
@@ -38,11 +44,11 @@ class CategoryService {
           }),
           headers: {'Content-Type': 'application/json'});
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && context.mounted) {
         showAboutDialog(context: context, children: [
           const Text('Categoría agregada correctamente'),
         ]);
-      } else {
+      } else if(context.mounted){
         showAboutDialog(context: context, children: [
           const Text('Error al agregar la categoría'),
           Text('StatusCode: ${response.statusCode}'),
