@@ -6,6 +6,7 @@ import 'package:mydrink_app/screens/detail_client.dart';
 import 'package:mydrink_app/services/clientes_service.dart';
 import 'package:mydrink_app/screens/add_category.dart';
 import 'package:provider/provider.dart';
+import 'package:mydrink_app/screens/bebidas.dart';
 
 import '../models/client_model.dart';
 
@@ -72,7 +73,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         builder: (context) => const AddCategoryScreen(), // Redirige a la nueva pantalla
                           ),
                       );
-                }, icon: const Icon(Icons.category),)    
+                }, icon: const Icon(Icons.category),),
+                IconButton(
+                  onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const BebidasScreen(), //redirige a bebidas
+                          ),
+                      );
+                }, icon: const Icon(Icons.local_bar),)
               ],
             ),
             const SizedBox(height: 30),
