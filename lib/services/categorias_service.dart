@@ -13,11 +13,14 @@ class CategoryService {
       List<Category> listaCat = [];
       var user = Provider.of<UserProvider>(context);
       String token = user.getUser()!.token!;
-      var headers = {'Authorization': 'Bearer $token'};
+      var headers = {
+        'Origin': Environments.direccionUser,
+        'Authorization': 'Bearer $token',
+      };
       var response = await http.get(
           Uri.parse('${Environments.direccionServer}/api/categorias'),
           //headers: {'Content-Type': 'application/json'});
-            headers: (headers));
+          headers: (headers));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -35,20 +38,28 @@ class CategoryService {
     }
   }
 
-  Future<void> addCategory(BuildContext context, Category category, UserProvider userProvider) async {
+  Future<void> addCategory(BuildContext context, Category category,
+      UserProvider userProvider) async {
     try {
-      var response = await http.post(
-          Uri.parse('${Environments.direccionServer}/api/categorias'),
-          body: json.encode({
-            "Nombre": category.nombre,
-          }),
-          headers: {'Content-Type': 'application/json'});
+      
+      var user = Provider.of<UserProvider>(context);
+      String token = user.getUser()!.token!;
+      var response = await http
+          .post(Uri.parse('${Environments.direccionServer}/api/categorias'),
+              body: json.encode({
+                "Nombre": category.nombre,
+              }),
+              headers: {
+            'Content-Type': 'application/json',
+            'Origin': Environments.direccionUser,
+            'Authorization': 'Bearer $token',
+          });
 
       if (response.statusCode == 200 && context.mounted) {
         showAboutDialog(context: context, children: [
           const Text('Categoría agregada correctamente'),
         ]);
-      } else if(context.mounted){
+      } else if (context.mounted) {
         showAboutDialog(context: context, children: [
           const Text('Error al agregar la categoría'),
           Text('StatusCode: ${response.statusCode}'),
@@ -60,16 +71,22 @@ class CategoryService {
     }
   }
 
-  Future<void> updateCategory(
-      BuildContext context, Category category) async {
+  Future<void> updateCategory(BuildContext context, Category category) async {
     try {
+      
+      var user = Provider.of<UserProvider>(context);
+      String token = user.getUser()!.token!;
       var response = await http.put(
           Uri.parse(
               '${Environments.direccionServer}/api/categorias/${category.idCategoria}'),
           body: json.encode({
             "Nombre": category.nombre,
           }),
-          headers: {'Content-Type': 'application/json'});
+          headers: {
+            'Content-Type': 'application/json',
+            'Origin': Environments.direccionUser,
+            'Authorization': 'Bearer $token',
+          });
 
       if (response.statusCode == 200) {
         showAboutDialog(context: context, children: [
@@ -89,9 +106,17 @@ class CategoryService {
 
   Future<void> deleteCategory(BuildContext context, int? idCategoria) async {
     try {
+      
+      var user = Provider.of<UserProvider>(context);
+      String token = user.getUser()!.token!;
       var response = await http.delete(
-          Uri.parse('${Environments.direccionServer}/api/categorias/$idCategoria'),
-          headers: {'Content-Type': 'application/json'});
+          Uri.parse(
+              '${Environments.direccionServer}/api/categorias/$idCategoria'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Origin': Environments.direccionUser,
+            'Authorization': 'Bearer $token',
+          });
 
       if (response.statusCode == 200 || response.statusCode == 204) {
         showAboutDialog(context: context, children: [

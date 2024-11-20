@@ -26,7 +26,7 @@ class UserProvider extends ChangeNotifier {
   }
 
   logOut() async {
-    await userBox.delete(usuario!.username);
+    await userBox.delete(usuario?.username);
     usuario = User();
     notifyListeners();
   }

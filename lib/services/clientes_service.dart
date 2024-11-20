@@ -13,7 +13,10 @@ class ClientesService {
       List<Client> listaC = [];
       var user = Provider.of<UserProvider>(context);
       String token = user.getUser()!.token!;
-      var headers = {'Authorization': 'Bearer $token'};
+      var headers = {
+        'Authorization': 'Bearer $token',
+        'Origin': Environments.direccionUser,
+      };
       var response = await http.get(
           Uri.parse('${Environments.direccionServer}/api/clientes'),
           headers: (headers));

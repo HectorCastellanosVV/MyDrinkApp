@@ -2,7 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:mydrink_app/models/bebida_model.dart';
 import 'package:mydrink_app/providers/user_provider.dart';
+import 'package:mydrink_app/screens/home_screen.dart';
 import 'package:mydrink_app/services/bebidas_service.dart';
+import 'package:mydrink_app/services/clientes_service.dart';
 import 'package:provider/provider.dart';
 
 class AddBebidaScreen extends StatefulWidget {
@@ -22,7 +24,7 @@ class _AddBebidaScreen extends State<AddBebidaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    precio = double.parse(precioController.text);
+    precio = double.tryParse(precioController.text) ?? 0;
     stock = int.tryParse(stockController.text);
     var user = Provider.of<UserProvider>(context);
     Size size = MediaQuery.of(context).size;
@@ -91,10 +93,10 @@ class _AddBebidaScreen extends State<AddBebidaScreen> {
                         Bebida drink = Bebida(
                           nombre: nombreController.text,
                           precio: precio,
-                          categoriaId: telefonoController.text,
-                          comentarios: comentariosController.text,
+                          //categoriaId: telefonoController.text,
+                          //comentarios: comentariosController.text,
                         );
-                        await ClientesService().addClient(context, drink,user);
+                        //await ClientesService().addClient(context, drink,user);
                         Navigator.push(
                             // ignore: use_build_context_synchronously
                             context,

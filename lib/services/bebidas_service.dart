@@ -13,7 +13,10 @@ class BebidaService {
       List<Bebida> listaBebidas = [];
       var user = Provider.of<UserProvider>(context, listen: false);
       String token = user.getUser()!.token!;
-      var headers = {'Authorization': 'Bearer $token'};
+      var headers = {
+        'Authorization': 'Bearer $token',
+        'Origin': Environments.direccionUser,
+      };
       var response = await http.get(
         Uri.parse('${Environments.direccionServer}/api/bebidas'),
         headers: headers,
@@ -35,12 +38,14 @@ class BebidaService {
     }
   }
 
-  Future<void> addBebida(BuildContext context, Bebida bebida, UserProvider userProvider) async {
+  Future<void> addBebida(
+      BuildContext context, Bebida bebida, UserProvider userProvider) async {
     try {
       String token = userProvider.getUser()!.token!;
       var headers = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
+        'Origin': Environments.direccionUser,
       };
       var response = await http.post(
         Uri.parse('${Environments.direccionServer}/api/bebidas'),
@@ -69,15 +74,18 @@ class BebidaService {
     }
   }
 
-  Future<void> updateBebida(BuildContext context, Bebida bebida, UserProvider userProvider) async {
+  Future<void> updateBebida(
+      BuildContext context, Bebida bebida, UserProvider userProvider) async {
     try {
       String token = userProvider.getUser()!.token!;
       var headers = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
+        'Origin': Environments.direccionUser,
       };
       var response = await http.put(
-        Uri.parse('${Environments.direccionServer}/api/bebidas/${bebida.idBebida}'),
+        Uri.parse(
+            '${Environments.direccionServer}/api/bebidas/${bebida.idBebida}'),
         body: json.encode({
           "nombre": bebida.nombre,
           "precio": bebida.precio,
@@ -103,18 +111,21 @@ class BebidaService {
     }
   }
 
-  Future<void> deleteBebida(BuildContext context, int? idBebida, UserProvider userProvider) async {
+  Future<void> deleteBebida(
+      BuildContext context, int? idBebida, UserProvider userProvider) async {
     try {
       String token = userProvider.getUser()!.token!;
       var headers = {
         'Authorization': 'Bearer $token',
+        'Origin': Environments.direccionUser,
       };
       var response = await http.delete(
         Uri.parse('${Environments.direccionServer}/api/bebidas/$idBebida'),
         headers: headers,
       );
 
-      if ((response.statusCode == 200 || response.statusCode == 204) && context.mounted) {
+      if ((response.statusCode == 200 || response.statusCode == 204) &&
+          context.mounted) {
         showAboutDialog(context: context, children: [
           const Text('Bebida eliminada correctamente'),
         ]);
