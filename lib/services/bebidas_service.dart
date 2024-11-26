@@ -21,9 +21,9 @@ class BebidaService {
         Uri.parse('${Environments.direccionServer}/api/bebidas'),
         headers: headers,
       );
-
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        
         var datos = data['body'];
         if (datos is List) {
           for (Map<String, dynamic> element in datos) {
@@ -31,9 +31,12 @@ class BebidaService {
             listaBebidas.add(item);
           }
         }
+      } else {
+        //
       }
       return listaBebidas;
     } catch (e) {
+      //
       return [];
     }
   }
@@ -50,10 +53,10 @@ class BebidaService {
       var response = await http.post(
         Uri.parse('${Environments.direccionServer}/api/bebidas'),
         body: json.encode({
-          "nombre": bebida.nombre,
-          "precio": bebida.precio,
-          "categoriaId": bebida.categoriaId,
-          "stock": bebida.stock,
+          "Nombre": bebida.nombre,
+          "Precio": bebida.precio,
+          "CategoriaId": bebida.categoriaId,
+          "Stock": bebida.stock,
         }),
         headers: headers,
       );
@@ -87,10 +90,10 @@ class BebidaService {
         Uri.parse(
             '${Environments.direccionServer}/api/bebidas/${bebida.idBebida}'),
         body: json.encode({
-          "nombre": bebida.nombre,
-          "precio": bebida.precio,
-          "categoriaId": bebida.categoriaId,
-          "stock": bebida.stock,
+          "Nombre": bebida.nombre,
+          "Precio": bebida.precio,
+          "CategoriaId": bebida.categoriaId,
+          "Stock": bebida.stock,
         }),
         headers: headers,
       );

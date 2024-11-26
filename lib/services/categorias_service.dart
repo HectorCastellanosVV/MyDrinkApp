@@ -31,9 +31,12 @@ class CategoryService {
             listaCat.add(item);
           }
         }
+      } else {
+        //
       }
       return listaCat;
     } catch (e) {
+      //
       return [];
     }
   }
@@ -42,8 +45,7 @@ class CategoryService {
       UserProvider userProvider) async {
     try {
       
-      var user = Provider.of<UserProvider>(context);
-      String token = user.getUser()!.token!;
+      String token = userProvider.getUser()!.token!;
       var response = await http
           .post(Uri.parse('${Environments.direccionServer}/api/categorias'),
               body: json.encode({
@@ -54,7 +56,6 @@ class CategoryService {
             'Origin': Environments.direccionUser,
             'Authorization': 'Bearer $token',
           });
-
       if (response.statusCode == 200 && context.mounted) {
         showAboutDialog(context: context, children: [
           const Text('Categoría agregada correctamente'),
@@ -71,11 +72,9 @@ class CategoryService {
     }
   }
 
-  Future<void> updateCategory(BuildContext context, Category category) async {
+  Future<void> updateCategory(BuildContext context, Category category, UserProvider userP) async {
     try {
-      
-      var user = Provider.of<UserProvider>(context);
-      String token = user.getUser()!.token!;
+      String token = userP.getUser()!.token!;
       var response = await http.put(
           Uri.parse(
               '${Environments.direccionServer}/api/categorias/${category.idCategoria}'),
@@ -89,26 +88,28 @@ class CategoryService {
           });
 
       if (response.statusCode == 200) {
-        showAboutDialog(context: context, children: [
-          const Text('Categoría actualizada correctamente'),
-        ]);
+        if (context.mounted) {
+          showAboutDialog(context: context, children: [
+            const Text('Categoría actualizada correctamente'),
+          ]);
+        }
       } else {
-        showAboutDialog(context: context, children: [
-          const Text('Error al actualizar la categoría'),
-          Text('StatusCode: ${response.statusCode}'),
-          Text('Message: ${response.reasonPhrase}'),
-        ]);
+        if (context.mounted) {
+          showAboutDialog(context: context, children: [
+            const Text('Error al actualizar la categoría'),
+            Text('StatusCode: ${response.statusCode}'),
+            Text('Message: ${response.reasonPhrase}'),
+          ]);
+        }
       }
     } catch (e) {
       //
     }
   }
 
-  Future<void> deleteCategory(BuildContext context, int? idCategoria) async {
+  Future<void> deleteCategory(BuildContext context, int? idCategoria,UserProvider userP) async {
     try {
-      
-      var user = Provider.of<UserProvider>(context);
-      String token = user.getUser()!.token!;
+      String token = userP.getUser()!.token!;
       var response = await http.delete(
           Uri.parse(
               '${Environments.direccionServer}/api/categorias/$idCategoria'),
@@ -119,15 +120,19 @@ class CategoryService {
           });
 
       if (response.statusCode == 200 || response.statusCode == 204) {
-        showAboutDialog(context: context, children: [
-          const Text('Categoría eliminada correctamente'),
-        ]);
+        if (context.mounted) {
+          showAboutDialog(context: context, children: [
+            const Text('Categoría eliminada correctamente'),
+          ]);
+        }
       } else {
-        showAboutDialog(context: context, children: [
-          const Text('Error al eliminar la categoría'),
-          Text('StatusCode: ${response.statusCode}'),
-          Text('Message: ${response.reasonPhrase}'),
-        ]);
+        if (context.mounted) {
+          showAboutDialog(context: context, children: [
+            const Text('Error al eliminar la categoría'),
+            Text('StatusCode: ${response.statusCode}'),
+            Text('Message: ${response.reasonPhrase}'),
+          ]);
+        }
       }
     } catch (e) {
       //

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mydrink_app/models/user_model.dart';
 import 'package:mydrink_app/screens/home_screen.dart';
 import 'package:mydrink_app/services/user_services.dart';
-import 'package:rive/rive.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -92,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   decoration: const InputDecoration(
                     //labelText: "Ingresa tu username",
-                    
+
                     hintText: 'Username',
                     labelStyle: TextStyle(
                       color: Colors.blue,

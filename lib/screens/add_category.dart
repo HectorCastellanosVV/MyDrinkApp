@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mydrink_app/models/categoria_model.dart';
-import 'package:mydrink_app/screens/home_screen.dart';
+import 'package:mydrink_app/screens/categorias_screen.dart';
 import 'package:mydrink_app/services/categorias_service.dart';
 import 'package:mydrink_app/providers/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -61,12 +61,14 @@ class _AddCategoryScreenState extends State<AddCategoryScreen>{
                     await CategoryService().addCategory(context, categoria, user);
 
                     // Navega a la pantalla de inicio después de agregar la categoría
-                    Navigator.push(
+                    if (context.mounted) {
+                      Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HomeScreen(usuario: user.getUser()!),
+                        builder: (context) => const CategoriasScreen(),
                       ),
                     );
+                    }
                   },
                 );
 

@@ -9,7 +9,6 @@ class UserServices {
   Future<User?> login(
       {required String username, required String password}) async {
     try {
-      print(Environments.direccionUser);
       var headers = {
         'Content-Type': 'application/json',
         'Origin': Environments.direccionUser

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mydrink_app/models/user_model.dart';
 import 'package:mydrink_app/providers/user_provider.dart';
-import 'package:mydrink_app/screens/add_client.dart';
-import 'package:mydrink_app/screens/detail_client.dart';
+import 'package:mydrink_app/screens/categorias_screen.dart';
+import 'package:mydrink_app/screens/user_screen.dart';
 import 'package:mydrink_app/services/clientes_service.dart';
-import 'package:mydrink_app/screens/add_category.dart';
 import 'package:provider/provider.dart';
 import 'package:mydrink_app/screens/bebidas.dart';
 
@@ -41,99 +40,107 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //Size size = MediaQuery.of(context).size;
-    //double width = size.width;
-    //double height = size.height;
-
     return Scaffold(
-      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text('Hola ${widget.usuario.username ?? ''}'),
+        leading: IconButton(
+            onPressed: () {
+              user.logOut();
+            },
+            icon: const Icon(Icons.exit_to_app)),
+      ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Icon(Icons.person, size: 38),
-                Text('Hola ${widget.usuario.username}!',
-                    style: const TextStyle(fontSize: 24)),
-                IconButton(
-                    onPressed: () {
-                      user.logOut();
-                      setState(() {});
-                    },
-                    icon: const Icon(Icons.exit_to_app)),
-                IconButton(
-                  onPressed: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AddCategoryScreen(), // Redirige a la nueva pantalla
-                          ),
-                      );
-                }, icon: const Icon(Icons.category),),
-                IconButton(
-                  onPressed: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const BebidasScreen(), //redirige a bebidas
-                          ),
-                      );
-                }, icon: const Icon(Icons.local_bar),)
-              ],
+            const SizedBox(
+              height: 10,
             ),
-            const SizedBox(height: 30),
-            const Text('Lista de usuarios:',
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            Expanded(
-              child: ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                itemCount: listaClientes.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(
-                        '${listaClientes[index].idCliente} ${listaClientes[index].nombre ?? ''}'),
-                    subtitle: Text(listaClientes[index].correo ?? ''),
-                    leading: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black),
-                            borderRadius: BorderRadius.circular(30),
-                            color: Colors.white),
-                        padding: const EdgeInsets.all(10),
-                        child: const Icon(
-                          Icons.person,
-                          color: Colors.black,
-                          size: 30,
-                        )),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DetailClientScreen(
-                              cliente: listaClientes[index],
-                            ),
-                          ));
-                    },
-                  );
-                },
-              ),
+            const Text('Selecciona una opción para continuar'),
+            const SizedBox(
+              height: 20,
+            ),
+            GridView.count(
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              mainAxisSpacing: 20,
+              crossAxisSpacing: 10,
+              children: [
+                getCardSelected(
+                  color: Colors.red,
+                  dato: "Clientes",
+                  icon: Icons.people,
+                  pressed: () {
+                    Navigator.push(
+                        // ignore: use_build_context_synchronously
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => UserScreen(
+                            usuario: widget.usuario,
+                          ),
+                        ));
+                  },
+                ),
+                getCardSelected(
+                  color: const Color.fromARGB(255, 240, 180, 0),
+                  dato: "Bebidas",
+                  icon: Icons.no_drinks,
+                  pressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const BebidasScreen(), 
+                      ),
+                    );
+                  },
+                ),
+                getCardSelected(
+                  color: Colors.blue,
+                  dato: "Categorías",
+                  icon: Icons.category_outlined,
+                  pressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CategoriasScreen(),
+                        ));
+                  },
+                ),
+              ],
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const AddClientScreen(),
-              ));
-        },
-        child: const Icon(Icons.add),
-      ),
     );
+  }
+
+  Widget getCardSelected(
+      {required Color color,
+      required String dato,
+      required IconData icon,
+      required GestureTapCallback? pressed}) {
+    return Expanded(
+        child: GestureDetector(
+      onTap: pressed,
+      child: Container(
+        color: color,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 40,
+              color: Colors.white,
+            ),
+            Text(
+              dato,
+              style: const TextStyle(fontSize: 20, color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+    ));
   }
 }

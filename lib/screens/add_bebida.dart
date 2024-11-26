@@ -1,10 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:mydrink_app/models/bebida_model.dart';
 import 'package:mydrink_app/providers/user_provider.dart';
 import 'package:mydrink_app/screens/home_screen.dart';
 import 'package:mydrink_app/services/bebidas_service.dart';
-import 'package:mydrink_app/services/clientes_service.dart';
 import 'package:provider/provider.dart';
 
 class AddBebidaScreen extends StatefulWidget {
@@ -93,10 +91,11 @@ class _AddBebidaScreen extends State<AddBebidaScreen> {
                         Bebida drink = Bebida(
                           nombre: nombreController.text,
                           precio: precio,
-                          //categoriaId: telefonoController.text,
-                          //comentarios: comentariosController.text,
+                          stock: int.tryParse(stockController.text) ?? 0,
+                          categoriaId:
+                              int.tryParse(categoriaController.text) ?? 5,
                         );
-                        //await ClientesService().addClient(context, drink,user);
+                        await BebidaService().addBebida(context, drink, user);
                         Navigator.push(
                             // ignore: use_build_context_synchronously
                             context,

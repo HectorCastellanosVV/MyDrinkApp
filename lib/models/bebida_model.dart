@@ -1,24 +1,19 @@
-class Bebida{
+class Bebida {
   int? idBebida;
   String? nombre;
   double? precio;
   int? categoriaId;
   int? stock;
 
-  Bebida({
-        this.idBebida,
-        this.nombre,
-        this.precio,
-        this.categoriaId,
-        this.stock
-      });
+  Bebida(
+      {this.idBebida, this.nombre, this.precio, this.categoriaId, this.stock});
 
   factory Bebida.fromJson(Map<String, dynamic> json) => Bebida(
-    idBebida: json['BebidaId'] as int,
-    nombre: json['Nombre'],
-        precio: json['precio'] as double,
-        categoriaId: json['categoriaId']as int,
-        stock: json['stock'] as int
-      );
-
+      idBebida: json['BebidaID'] as int,
+      nombre: json['Nombre'],
+      precio: json['Precio'] is double
+          ? json['Precio']
+          : double.tryParse(json['Precio']) ?? 0,
+      categoriaId: json['CategoriaID'] is int ? json['CategoriaID'] : 5,
+      stock: json['Stock'] as int);
 }
