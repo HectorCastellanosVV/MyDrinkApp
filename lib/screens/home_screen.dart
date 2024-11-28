@@ -121,26 +121,25 @@ class _HomeScreenState extends State<HomeScreen> {
       required String dato,
       required IconData icon,
       required GestureTapCallback? pressed}) {
-    return Expanded(
-        child: GestureDetector(
-      onTap: pressed,
-      child: Container(
-        color: color,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 40,
-              color: Colors.white,
-            ),
-            Text(
-              dato,
-              style: const TextStyle(fontSize: 20, color: Colors.white),
-            ),
-          ],
+    return GestureDetector(
+          onTap: pressed,
+          child: Container(
+    color: color,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          icon,
+          size: 40,
+          color: Colors.white,
         ),
-      ),
-    ));
+        Text(
+          dato,
+          style: const TextStyle(fontSize: 20, color: Colors.white),
+        ),
+      ],
+    ),
+          ),
+        );
   }
 }

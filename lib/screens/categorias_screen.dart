@@ -21,6 +21,12 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
     getCategorias();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    getCategorias();
+  }
+
   void getCategorias() async {
     List<Category> listaC = await categoryService.getListCategories(context);
     setState(() {
