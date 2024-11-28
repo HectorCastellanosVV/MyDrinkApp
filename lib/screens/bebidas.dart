@@ -82,12 +82,13 @@ class _BebidasScreenState extends State<BebidasScreen> {
 
   Widget buildBebidaCard(Bebida bebida) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
+      onTap: () async{
+        await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => UpdateBebida(bebida: bebida),
             ));
+        fetchBebidas();
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8.0),

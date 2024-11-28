@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:mydrink_app/models/categoria_model.dart';
-import 'package:mydrink_app/screens/categorias_screen.dart';
 import 'package:mydrink_app/services/categorias_service.dart';
 import 'package:mydrink_app/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
-class AddCategoryScreen extends StatefulWidget{
+class AddCategoryScreen extends StatefulWidget {
   const AddCategoryScreen({super.key});
   @override
-  State<AddCategoryScreen>  createState() => _AddCategoryScreenState();
+  State<AddCategoryScreen> createState() => _AddCategoryScreenState();
 }
 
-class _AddCategoryScreenState extends State<AddCategoryScreen>{
+class _AddCategoryScreenState extends State<AddCategoryScreen> {
   TextEditingController nombreController = TextEditingController();
 
-
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     var user = Provider.of<UserProvider>(context);
     Size size = MediaQuery.of(context).size;
     double width = size.width;
@@ -31,7 +29,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen>{
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            
+
             // Campo de texto para "Nombre de categoría"
             datosCategory(
               width: width,
@@ -58,16 +56,14 @@ class _AddCategoryScreenState extends State<AddCategoryScreen>{
                     );
 
                     // Llama al servicio para agregar la categoría
-                    await CategoryService().addCategory(context, categoria, user);
+                    await CategoryService()
+                        .addCategory(context, categoria, user);
 
                     // Navega a la pantalla de inicio después de agregar la categoría
                     if (context.mounted) {
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CategoriasScreen(),
-                      ),
-                    );
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
                     }
                   },
                 );
@@ -75,7 +71,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen>{
                 // Diálogo de confirmación para agregar la categoría
                 AlertDialog alert = AlertDialog(
                   title: const Text("Agregar categoría"),
-                  content: const Text("¿Está seguro que desea agregar esta categoría?"),
+                  content: const Text(
+                      "¿Está seguro que desea agregar esta categoría?"),
                   actions: [
                     botonCancelar,
                     botonContinuar,

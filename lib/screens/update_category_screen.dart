@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mydrink_app/models/categoria_model.dart';
 import 'package:mydrink_app/providers/user_provider.dart';
-import 'package:mydrink_app/screens/categorias_screen.dart';
 import 'package:mydrink_app/services/categorias_service.dart';
 import 'package:provider/provider.dart';
 
@@ -64,11 +63,8 @@ class _UpdateCategoryScreenState extends State<UpdateCategoryScreen> {
                     await CategoryService()
                         .updateCategory(context, category, user);
                     if (context.mounted) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CategoriasScreen(),
-                          ));
+                      Navigator.pop(context);
+                      Navigator.pop(context);
                     }
                   },
                   child: const Text('Actualizar categoría'),
@@ -87,11 +83,8 @@ class _UpdateCategoryScreenState extends State<UpdateCategoryScreen> {
                     await CategoryService()
                         .deleteCategory(context, category.idCategoria, user);
                     if (context.mounted) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CategoriasScreen(),
-                          ));
+                      Navigator.pop(context);
+                      Navigator.pop(context);
                     }
                   },
                   child: const Text('Eliminar categoría'),
@@ -100,13 +93,6 @@ class _UpdateCategoryScreenState extends State<UpdateCategoryScreen> {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Navigate back to the category list screen
-          Navigator.pop(context);
-        },
-        child: const Icon(Icons.arrow_back),
       ),
     );
   }

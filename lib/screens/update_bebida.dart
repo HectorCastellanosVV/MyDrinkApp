@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mydrink_app/models/bebida_model.dart';
 import 'package:mydrink_app/providers/user_provider.dart';
-import 'package:mydrink_app/screens/bebidas.dart';
 import 'package:mydrink_app/services/bebidas_service.dart';
 import 'package:mydrink_app/services/categorias_service.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +27,7 @@ class _UpdateBebidaState extends State<UpdateBebida> {
     nombreController.text = '${widget.bebida.nombre}';
     precioController.text = '${widget.bebida.precio}';
     stockController.text = '${widget.bebida.stock}';
-    valorActual = widget.bebida.idBebida ?? 5;
+    valorActual = widget.bebida.categoriaId!;
   }
 
   @override
@@ -133,11 +132,8 @@ class _UpdateBebidaState extends State<UpdateBebida> {
                       await BebidaService()
                           .updateBebida(context, bebidaActual, user);
                       if (context.mounted) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const BebidasScreen(),
-                            ));
+                        Navigator.pop(context);
+                        Navigator.pop(context);
                       }
                     },
                     child: const Text('Actualizar'),
@@ -146,8 +142,19 @@ class _UpdateBebidaState extends State<UpdateBebida> {
                     width: 40,
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
+                    onPressed: () async {
+                      Bebida bebidaActual = Bebida(
+                        categoriaId: valorActual,
+                        idBebida: widget.bebida.idBebida,
+                        nombre: nombreController.text,
+                        precio: double.parse(precioController.text),
+                        stock: int.parse(stockController.text),
+                      );
+                      await BebidaService()
+                          .deleteBebida(context, bebidaActual.idBebida, user);
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                      }
                     },
                     child: const Text('Eliminar'),
                   )

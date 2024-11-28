@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mydrink_app/models/bebida_model.dart';
 import 'package:mydrink_app/providers/user_provider.dart';
-import 'package:mydrink_app/screens/home_screen.dart';
 import 'package:mydrink_app/services/bebidas_service.dart';
+import 'package:mydrink_app/services/categorias_service.dart';
 import 'package:provider/provider.dart';
 
 class AddBebidaScreen extends StatefulWidget {
@@ -17,8 +17,28 @@ class _AddBebidaScreen extends State<AddBebidaScreen> {
   int? stock;
   TextEditingController nombreController = TextEditingController();
   TextEditingController precioController = TextEditingController();
-  TextEditingController categoriaController = TextEditingController();
   TextEditingController stockController = TextEditingController();
+  List<DropdownMenuItem> items = [];
+  int valorActual = 1;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    mostrarItems();
+  }
+
+  void mostrarItems() async {
+    var datos = await CategoryService().getListCategories(context);
+    List<DropdownMenuItem> categoriasDropdown = datos.map((dato) {
+      return DropdownMenuItem(
+        value: dato.idCategoria,
+        child: Text(dato.nombre ?? 'Sin nombre de categoría'),
+      );
+    }).toList();
+    setState(() {
+      items = categoriasDropdown;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,11 +88,17 @@ class _AddBebidaScreen extends State<AddBebidaScreen> {
               const SizedBox(
                 height: 20,
               ),
-              datosDrink(
-                width: width,
-                controller: categoriaController,
-                labelText: "categoria",
-                funcion: (value) {},
+              const Text('ID Categoría'),
+              DropdownButton(
+                value: valorActual,
+                items: items,
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      valorActual = value;
+                    });
+                  }
+                },
               ),
               const SizedBox(
                 height: 40,
@@ -92,17 +118,14 @@ class _AddBebidaScreen extends State<AddBebidaScreen> {
                           nombre: nombreController.text,
                           precio: precio,
                           stock: int.tryParse(stockController.text) ?? 0,
-                          categoriaId:
-                              int.tryParse(categoriaController.text) ?? 5,
+                          categoriaId: valorActual,
                         );
                         await BebidaService().addBebida(context, drink, user);
-                        Navigator.push(
-                            // ignore: use_build_context_synchronously
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  HomeScreen(usuario: user.getUser()!),
-                            ));
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        }
                       },
                     );
                     AlertDialog alert = AlertDialog(

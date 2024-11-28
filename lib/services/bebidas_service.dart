@@ -55,7 +55,7 @@ class BebidaService {
         body: json.encode({
           "Nombre": bebida.nombre,
           "Precio": bebida.precio,
-          "CategoriaId": bebida.categoriaId,
+          "CategoriaID": bebida.categoriaId,
           "Stock": bebida.stock,
         }),
         headers: headers,
@@ -92,7 +92,7 @@ class BebidaService {
         body: json.encode({
           "Nombre": bebida.nombre,
           "Precio": bebida.precio,
-          "CategoriaId": bebida.categoriaId,
+          "CategoriaID": bebida.categoriaId,
           "Stock": bebida.stock,
         }),
         headers: headers,

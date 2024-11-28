@@ -14,6 +14,7 @@ class Bebida {
       precio: json['Precio'] is double
           ? json['Precio']
           : double.tryParse(json['Precio']) ?? 0,
-      categoriaId: json['CategoriaID'] is int ? json['CategoriaID'] : 5,
+      categoriaId:
+          (json['CategoriaID'] != null) ? json['CategoriaID'] as int : 5,
       stock: json['Stock'] as int);
 }

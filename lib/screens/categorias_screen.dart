@@ -18,11 +18,6 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
     getCategorias();
   }
 
@@ -42,36 +37,40 @@ class _CategoriasScreenState extends State<CategoriasScreen> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: ListView.builder(
-          physics: const BouncingScrollPhysics(),
           itemCount: categorias.length,
           itemBuilder: (context, index) {
-            return ListTile(
-              title:
-                  Text(categorias[index].nombre ?? 'Sin nombre de categoría'),
-              subtitle: Text('${categorias[index].idCategoria ?? ''}'),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UpdateCategoryScreen(
-                        category: categorias[index],
-                      ),
-                    ));
-              },
-            );
+            return getCategoriaCard(index, context);
           },
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async{
+          await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => const AddCategoryScreen(),
               ));
+          getCategorias();
         },
         child: const Icon(Icons.add),
       ),
+    );
+  }
+
+  ListTile getCategoriaCard(int index, BuildContext context) {
+    return ListTile(
+      title: Text(categorias[index].nombre ?? 'Sin nombre de categoría'),
+      subtitle: Text('${categorias[index].idCategoria ?? ''}'),
+      onTap: () async {
+        await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => UpdateCategoryScreen(
+                category: categorias[index],
+              ),
+            ));
+        getCategorias();
+      },
     );
   }
 }
