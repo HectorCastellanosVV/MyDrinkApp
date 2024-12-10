@@ -1,145 +1,46 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:mydrink_app/config/environments.dart';
 import 'package:mydrink_app/models/user_model.dart';
 import 'package:mydrink_app/providers/user_provider.dart';
-import 'package:mydrink_app/screens/categorias_screen.dart';
-import 'package:mydrink_app/screens/user_screen.dart';
-import 'package:mydrink_app/services/clientes_service.dart';
-import 'package:provider/provider.dart';
-import 'package:mydrink_app/screens/bebidas.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 
-import '../models/client_model.dart';
+class UserServices {
+  Future<User?> login(
+      {required String username, required String password}) async {
+    try {
+      final key = encrypt.Key.fromUtf8('32charlongencryptionkey32');
+      final iv = encrypt.IV.fromLength(16);
 
-class HomeScreen extends StatefulWidget {
-  final User usuario;
-  const HomeScreen({super.key, required this.usuario});
+      final encrypter = encrypt.Encrypter(encrypt.AES(key));
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
+      final encryptedPassword = encrypter.encrypt(password, iv: iv);
 
-class _HomeScreenState extends State<HomeScreen> {
-  late UserProvider user;
-  List<Client> listaClientes = [];
+      var headers = {
+        'Content-Type': 'application/json',
+        'Origin': Environments.direccionUser
+      };
 
-  @override
-  void initState() {
-    super.initState();
-    user = Provider.of<UserProvider>(context, listen: false);
-  }
+      var response = await http.post(
+        Uri.parse('${Environments.direccionServer}/api/login'),
+        headers: (headers),
+        body: json.encode({
+          "username": username,
+          "password": encryptedPassword.base64,  // Envía la contraseña encriptada en base64
+        }),
+      );
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    getClientes();
-  }
-
-  Future<void> getClientes() async {
-    listaClientes = await ClientesService().getListClients(context);
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Hola ${widget.usuario.username ?? ''}'),
-        leading: IconButton(
-            onPressed: () {
-              user.logOut();
-            },
-            icon: const Icon(Icons.exit_to_app)),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            const Text('Selecciona una opción para continuar'),
-            const SizedBox(
-              height: 20,
-            ),
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              mainAxisSpacing: 20,
-              crossAxisSpacing: 10,
-              children: [
-                getCardSelected(
-                  color: Colors.red,
-                  dato: "Clientes",
-                  icon: Icons.people,
-                  pressed: () {
-                    Navigator.push(
-                        // ignore: use_build_context_synchronously
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => UserScreen(
-                            usuario: widget.usuario,
-                          ),
-                        ));
-                  },
-                ),
-                getCardSelected(
-                  color: const Color.fromARGB(255, 240, 180, 0),
-                  dato: "Bebidas",
-                  icon: Icons.no_drinks,
-                  pressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            const BebidasScreen(), 
-                      ),
-                    );
-                  },
-                ),
-                getCardSelected(
-                  color: Colors.blue,
-                  dato: "Categorías",
-                  icon: Icons.category_outlined,
-                  pressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const CategoriasScreen(),
-                        ));
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget getCardSelected(
-      {required Color color,
-      required String dato,
-      required IconData icon,
-      required GestureTapCallback? pressed}) {
-    return GestureDetector(
-          onTap: pressed,
-          child: Container(
-    color: color,
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          icon,
-          size: 40,
-          color: Colors.white,
-        ),
-        Text(
-          dato,
-          style: const TextStyle(fontSize: 20, color: Colors.white),
-        ),
-      ],
-    ),
-          ),
-        );
+      if (response.statusCode == 200) {
+        final authResponse = jsonDecode(response.body);
+        User user = User.fromJson(authResponse, username, password);
+        await UserProvider().login(user);
+        return user;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      //print('Error $e');
+      return null;
+    }
   }
 }
