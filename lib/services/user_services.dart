@@ -27,7 +27,7 @@ class UserServices {
         return null;
       }
     } catch (e) {
-      //print('Error $e');
+      print('Error $e');
       return null;
     }
   }

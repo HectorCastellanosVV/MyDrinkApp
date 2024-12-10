@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Artboard? artboard;
   @override
   void initState() {
-    rootBundle.load(animationLink).then((value) {
+    /* rootBundle.load(animationLink).then((value) {
       final file = RiveFile.import(value);
       final art = file.mainArtboard;
       stateMachineController =
@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       }
       setState(() => artboard = art);
-    });
+    }); */
     super.initState();
   }
 
