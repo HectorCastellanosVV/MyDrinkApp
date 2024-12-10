@@ -1,119 +1,46 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:mydrink_app/config/environments.dart';
 import 'package:mydrink_app/models/user_model.dart';
 import 'package:mydrink_app/providers/user_provider.dart';
-import 'package:mydrink_app/screens/add_client.dart';
-import 'package:mydrink_app/screens/detail_client.dart';
-import 'package:mydrink_app/services/clientes_service.dart';
-import 'package:provider/provider.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 
-import '../models/client_model.dart';
+class UserServices {
+  Future<User?> login(
+      {required String username, required String password}) async {
+    try {
+      final key = encrypt.Key.fromUtf8('32charlongencryptionkey32');
+      final iv = encrypt.IV.fromLength(16);
 
-class HomeScreen extends StatefulWidget {
-  final User usuario;
-  const HomeScreen({super.key, required this.usuario});
+      final encrypter = encrypt.Encrypter(encrypt.AES(key));
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
+      final encryptedPassword = encrypter.encrypt(password, iv: iv);
 
-class _HomeScreenState extends State<HomeScreen> {
-  late UserProvider user;
-  List<Client> listaClientes = [];
+      var headers = {
+        'Content-Type': 'application/json',
+        'Origin': Environments.direccionUser
+      };
 
-  @override
-  void initState() {
-    super.initState();
-    user = Provider.of<UserProvider>(context, listen: false);
-  }
+      var response = await http.post(
+        Uri.parse('${Environments.direccionServer}/api/login'),
+        headers: (headers),
+        body: json.encode({
+          "username": username,
+          "password": encryptedPassword.base64,  // Envía la contraseña encriptada en base64
+        }),
+      );
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    getClientes();
-  }
-
-  Future<void> getClientes() async {
-    listaClientes = await ClientesService().getListClients(context);
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    //Size size = MediaQuery.of(context).size;
-    //double width = size.width;
-    //double height = size.height;
-
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Icon(Icons.person, size: 38),
-                Text('Hola ${widget.usuario.username}!',
-                    style: const TextStyle(fontSize: 24)),
-                IconButton(
-                    onPressed: () {
-                      user.logOut();
-                      setState(() {});
-                    },
-                    icon: const Icon(Icons.exit_to_app))
-              ],
-            ),
-            const SizedBox(height: 30),
-            const Text('Lista de usuarios:',
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            Expanded(
-              child: ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                itemCount: listaClientes.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(
-                        '${listaClientes[index].idCliente} ${listaClientes[index].nombre ?? ''}'),
-                    subtitle: Text(listaClientes[index].correo ?? ''),
-                    leading: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black),
-                            borderRadius: BorderRadius.circular(30),
-                            color: Colors.white),
-                        padding: const EdgeInsets.all(10),
-                        child: const Icon(
-                          Icons.person,
-                          color: Colors.black,
-                          size: 30,
-                        )),
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DetailClientScreen(
-                              cliente: listaClientes[index],
-                            ),
-                          ));
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const AddClientScreen(),
-              ));
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
+      if (response.statusCode == 200) {
+        final authResponse = jsonDecode(response.body);
+        User user = User.fromJson(authResponse, username, password);
+        await UserProvider().login(user);
+        return user;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      //print('Error $e');
+      return null;
+    }
   }
 }

@@ -1,0 +1,17 @@
+{ok: true, status: 200, body: [
+        {BebidaID: 1, Nombre: Café, Precio: 12.00, CategoriaID: null, Stock: 10
+        },
+        {BebidaID: 2, Nombre: Azulito, Precio: 20.00, CategoriaID: null, Stock: 22
+        },
+        {BebidaID: 4, Nombre: nombreBebida, Precio: 0.00, CategoriaID: null, Stock: 4
+        },
+        {BebidaID: 550, Nombre: nombreBebida, Precio: 0.00, CategoriaID: null, Stock: 4
+        },
+        {BebidaID: 827, Nombre: Azulito, Precio: 120.00, CategoriaID: 5, Stock: 25
+        },
+        {BebidaID: 828, Nombre: nombreBebida, Precio: 0.00, CategoriaID: null, Stock: 4
+        },
+        {BebidaID: 2147483647, Nombre: testPut, Precio: 0.00, CategoriaID: null, Stock: 4
+        }
+    ]
+}
